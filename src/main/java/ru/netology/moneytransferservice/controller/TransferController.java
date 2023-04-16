@@ -5,35 +5,29 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.netology.moneytransferservice.cards.Cards;
 import ru.netology.moneytransferservice.service.Result;
 import ru.netology.moneytransferservice.service.TransferService;
 
-import java.util.UUID;
 
 @CrossOrigin
 @RestController
 
 public class TransferController {
-    TransferService transferService;
+    TransferService service;
 
-    public TransferController(TransferService transferService) {
-        this.transferService = transferService;
-    }
+   public TransferController(TransferService service) {
+        this.service = service;
+   }
+
+
     @RequestMapping("/transfer")
     @PostMapping
-    public ResponseEntity<String> getRequest(@RequestBody String request) throws JSONException {
+    public ResponseEntity<String> getResponse(@RequestBody String request) throws JSONException {
         System.out.println(request);
         //{"cardFromNumber":"1234123412341234","cardToNumber":"5678567856785678","cardFromCVV":"123","cardFromValidTill":"06/26","amount":{"currency":"RUR","value":50000}}
-        //transferService.goTransfer(request);
 
-
-        //JSONObject json = new JSONObject("operationId:"+operationId);
-
-        //System.out.println("JSON: "+json.toString());
-
-        Result res = transferService.goTransfer(request);
-        int operationId = transferService.getOperationId();
+        Result res = service.goTransfer(request);
+        int operationId = service.getOperationId();
         switch (res) {
             case OK:
                 return new ResponseEntity<>(String.format("{\"description\":\"Success transfer\"," +
@@ -52,42 +46,16 @@ public class TransferController {
 
     @RequestMapping("/confirmOperation")
     @PostMapping
-    public ResponseEntity<String> getConfirm(@RequestBody String request) throws JSONException {
-        //transferService.goTransfer(request);
+    public ResponseEntity<String> getConfirmResponse(@RequestBody String request) throws JSONException {
         System.out.println(request);
         //{"code":"0000","operationId":12345}
         JSONObject jsonObject = new JSONObject(request);
         String code = (String) jsonObject.get("code");
 
-        int operationId = transferService.getOperationId();
+        int operationId = service.getOperationId();
 
- //       return new ResponseEntity<>(String.format("{\"operationId\":%s}",operationId), HttpStatus.OK);
         return new ResponseEntity<>(String.format("{\"description\":\"Success confirmation\" ,\"operationId\":%s}",Integer.toString(operationId)), HttpStatus.OK);
     }
 
-    /*
-        @GetMapping
-        public List<Post> all() {
-            return service.all();
-        }
-
-        @GetMapping("/{id}")
-        public Post getById(@PathVariable long id) {
-            return service.getById(id);
-        }
-
-        @PostMapping
-        public Post save(@RequestBody Post post) {
-            return service.save(post);
-        }
-
-
-
-        @DeleteMapping("/{id}")
-        public void removeById(@PathVariable long id) {
-            service.removeById(id);
-        }
-
- */
 
 }

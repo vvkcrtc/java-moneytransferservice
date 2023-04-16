@@ -1,4 +1,4 @@
-package ru.netology.moneytransferservice.cards;
+package ru.netology.moneytransferservice.repository;
 
 public class Card {
     protected String cardNumber;

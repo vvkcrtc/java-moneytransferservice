@@ -3,15 +3,12 @@ package ru.netology.moneytransferservice;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ru.netology.moneytransferservice.cards.Card;
-import ru.netology.moneytransferservice.cards.Cards;
-import ru.netology.moneytransferservice.cards.Operation;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.netology.moneytransferservice.repository.Card;
+import ru.netology.moneytransferservice.repository.CardsRepository;
+import ru.netology.moneytransferservice.repository.Operation;
 
 public class CardsTests {
-    static Cards cards = new Cards();
+    static CardsRepository cards = new CardsRepository();
     @BeforeAll
     public static void init() {
         cards.addCard(new Card("1234567812340001","05/28","987","RUB"));

@@ -1,20 +1,17 @@
-package ru.netology.moneytransferservice.cards;
+package ru.netology.moneytransferservice.repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
 
-
-//public enum Operation {ADD, DEC, BALANCE};
 @Repository
-public class Cards {
+public class CardsRepository {
 
     protected List<Card> cards = new ArrayList<>();
+    public CardsRepository(){}
 
-    public Cards() {
 
-    }
     public void addCard(Card card) {
         cards.add(card);
     }

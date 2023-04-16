@@ -1,19 +1,22 @@
 package ru.netology.moneytransferservice.service;
 
 import org.springframework.stereotype.Service;
-import ru.netology.moneytransferservice.cards.Card;
-import ru.netology.moneytransferservice.cards.Cards;
+import ru.netology.moneytransferservice.repository.Card;
+import ru.netology.moneytransferservice.repository.CardsRepository;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import ru.netology.moneytransferservice.cards.Operation;
+import ru.netology.moneytransferservice.repository.Operation;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class TransferService {
-    Cards cards;
-    protected int operationId = 0;
+    CardsRepository cards;
+    AtomicInteger operationId = new AtomicInteger();
     protected int bankCommPercent = 1;
     Logger logger = new Logger("transfer.log.txt");
-    public TransferService(Cards cards) {
+    public TransferService(CardsRepository cards) {
+        this.operationId.set(0);
         this.cards = cards;
         this.cards.addCard(new Card("0000000000000001","05/28","987","RUR"));
         this.cards.addCard(new Card("0000000000000002","05/28","123","RUR"));
@@ -25,15 +28,15 @@ public class TransferService {
                                    String cardTo, float value, float bankComm, Result status) {
         String res = "Ошибка";
         if(status == Result.OK) {
-        res ="id : " + operationId + " Перевод с карты " +
+            res ="id : " + operationId.toString() + " Перевод с карты " +
                     cardFrom + " действ. до " + cardFromValidTill + " CVV " +
                     cardFromCVV + " на карту " + cardTo + " , сумма " + Float.toString(value) + " коммиссия " + bankComm;
         } else if (status == Result.INPUT_DATA_ERROR) {
-            res ="id : " + operationId + " Ошибка перевода " +
+            res ="id : " + operationId.toString() + " Ошибка перевода " +
                     cardFrom + " действ. до " + cardFromValidTill + " CVV " +
                     cardFromCVV + " не верно указаны данные перевода";
         } else {
-            res ="id : " + operationId + " Ошибка перевода " + cardFrom + " действ. до " + cardFromValidTill + " CVV " +
+            res ="id : " + operationId.toString() + " Ошибка перевода " + cardFrom + " действ. до " + cardFromValidTill + " CVV " +
                     cardFromCVV + " на карту " + " операция не выполнена";
         }
 
@@ -41,7 +44,7 @@ public class TransferService {
     }
 
     public Result goTransfer(String request) throws JSONException {
-        operationId++;
+        operationId.incrementAndGet();
         JSONObject jsonObject = new JSONObject(request);
         String cardFrom = (String) jsonObject.get("cardFromNumber");
         String cardFromCVV = (String) jsonObject.get("cardFromCVV");
@@ -71,7 +74,7 @@ public class TransferService {
     }
 
     public int getOperationId() {
-        return operationId;
+        return operationId.get();
     }
 
 
